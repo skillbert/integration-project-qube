@@ -1,0 +1,8 @@
+rod length: 13cm
+rod diamenter 1cm
+
+rod pivot offset: 0.75cm
+
+arm length 8.5cm
+
+90deg rotation blind splot
