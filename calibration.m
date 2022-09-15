@@ -35,7 +35,7 @@ ticklost = 100;                                          % max number of ticks l
 
 %sim details 
 h = 0.01  ;% sampling time
-T= 20 ;
+T= 0 ;
 time = 0:h:T ;
 sim qubetemplate
 
@@ -44,7 +44,6 @@ y = [alphasim.data , thetasim.data];
 %
 save('calibrate_alpha.mat','y')
 figure
-plot(time,y(:,1),time,y(:,2))
 
 
 %% linear regression 
