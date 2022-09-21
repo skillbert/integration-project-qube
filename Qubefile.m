@@ -30,10 +30,24 @@ ticklost = 100;                                          % max number of ticks l
 
 
 %% The code 
+T= 10 ;
+h = 0.02  ;% sampling time
 
-h = 0.01  ;% sampling time
+sampleamount =T/h;
 
+amplitude = 0.02 ;
+Range = [-amplitude,amplitude];
+Band = [0 1/2];
+u = idinput(sampleamount,'prbs',Band,Range);
+t = 1:1:length(u);
+t =t*h;
+figure
+plot(u)
+
+U = [t',u];
+%% 
 sim qubetemplate
+save('prbs_data1.mat','experiment')
 
 
 
