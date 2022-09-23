@@ -1,14 +1,14 @@
 clc; close all; clear 
 
 %% Loading and preparing data 
-load("oldiddata/prbs_data.mat")
+load("oldiddata/prbs_data.mat") 
 
 t = 0:0.02:10';
 
 %experiment.data
 
 y = experiment.data(:,1:2) ; %output
-u = experiment.data(:,4) ; %input
+u = experiment.data(:,4); %input
 Ts = 0.02 ; %sampling time
 
 data = iddata(y, u, Ts, 'Name', 'Qube');
@@ -26,7 +26,7 @@ plot(data)
 
 
 %parameters 
-L_p = 0.129 ;%meters
+L_p = 0.12 ;%meters
 L_r = 0.085 ;%meters 
 m_p = 0.024 ;%kg 
 m_r = 0.095 ;%kg
@@ -34,12 +34,12 @@ J_p = 1/12*m_p*L_p^2;
 J_r = 1/3*m_r*L_r^2;
 %J_p = 3.3e-5;
 %J_r = 5.7e-5;
-C_p = 0 ;
+C_p = 0.0001 ;
 C_r = 0.0015;
 
 R_m = 8.4 ;%ohm;
 K_t = 0.042 ;% Nm/A
-K_m = 0.042 ;%Vs/rad
+K_m = 0.042 ;%V*s/rad
 
 %Making the idgrey 
 odefun = 'LinearQube' ;
@@ -80,7 +80,7 @@ a12 = 4.0219e-04;
 a13 = 1.3158e-04;
 a14 = -0.0050;
 
-a21 = 0.0601 ;
+a21 = 0.0152 ;
 a22 = 1.3313e-04 ;
 
 
@@ -97,13 +97,13 @@ init_sys_intermediate = idgrey(odefun,parameters,fcn_type);
 
 %% Making simple model 
 %parameters 
-A32 = 149.27 ;
-A33 = -0.0104;
-A42 = -261.6 ;
-A43 = 0.0103 ;
+A32 = 55.15 ;
+A33 = -6.283;
+A42 = -168.6 ;
+A43 =  6.21 ;
 
-B3 =49.72 ;
-B4 =-49.14;
+B3 =18.37 ;
+B4 =-18.16;
 %Making the idgrey 
 odefun = 'SimpleModel' ;
 parameters = {A32;A33;A42;A43;B3;B4};
