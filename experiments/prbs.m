@@ -1,6 +1,6 @@
 
 T = 10 ;
-h = 0.02  ;% sampling time
+h = 0.05  ;% sampling time
 
 sampleamount = T/h;
 

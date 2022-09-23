@@ -1,5 +1,5 @@
 
-h=0.02;
+h=0.05;
 T=15;
 timesraw=0:h:T;
 
@@ -9,12 +9,15 @@ amplitude=0.05;
 
 u=zeros(length(timesraw),1);
 
+nsamplecycle=signaltime/h;
+dutysamples=ceil(nsamplecycle*0.07);
+
 for i=1:length(u)-1
     samplet=timesraw(i);
-    duty=mod(samplet,signaltime);
-    if duty<0.07
+    subi=mod(i,nsamplecycle);
+    if subi<dutysamples
         u(i)=amplitude;
-    elseif duty<0.14
+    elseif subi<dutysamples*2
         u(i)=-amplitude;
     else
         u(i)=0;
