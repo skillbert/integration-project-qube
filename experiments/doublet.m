@@ -1,6 +1,6 @@
 
 h=0.05;
-T=15;
+T=20;
 timesraw=0:h:T;
 
 signaltime=1;
