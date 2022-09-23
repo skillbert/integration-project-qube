@@ -72,8 +72,30 @@ init_sys.Structure.Parameters(10).Minimum = 0;
 init_sys.Structure.Parameters(11).Minimum = 0;
 init_sys.Structure.Parameters(4).Maximum = 0.1;
 
+%% Making intermediate model 
 
-%% Making other model 
+%parameters 
+a11 = 0.0017;
+a12 = 4.0219e-04;
+a13 = 1.3158e-04;
+a14 = -0.0050;
+
+a21 = 0.0601 ;
+a22 = 1.3313e-04 ;
+
+
+%Making the idgrey 
+odefun = 'IntermediateModel' ;
+parameters = {a11;a12;a13;a14;a21;a22};
+
+fcn_type ='c' ; %indiciating continuous linear function
+
+init_sys_intermediate = idgrey(odefun,parameters,fcn_type);
+
+
+
+
+%% Making simple model 
 %parameters 
 A32 = 149.27 ;
 A33 = -0.0104;
@@ -96,6 +118,11 @@ sys = greyest(data,init_sys);
 opt = compareOptions('InitialCondition','zero');
 figure
 compare(data,sys,Inf,opt)
+
+sys_intermediate = greyest(data,init_sys_intermediate);
+figure
+compare(data,sys_intermediate,Inf,opt)
+
 
 sys_simple = greyest(data,init_sys_simple);
 figure
