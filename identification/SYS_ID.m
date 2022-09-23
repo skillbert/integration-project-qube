@@ -1,7 +1,7 @@
 clc; close all; clear 
 
 %% Loading and preparing data 
-load("prbs_data.mat") 
+load("oldiddata/prbs_data.mat")
 
 t = 0:0.02:10';
 
