@@ -1,5 +1,3 @@
-function runexp(configname)
-
 global datasetname
 %fixpath
 %TODO inline these vars
@@ -10,10 +8,11 @@ T=10;%experiment time
 
 run(sprintf('experiments/%s',configname));
 sim('hardware/qubetemplate',T);
-signalnames={'','pitch','','','motor1','motor2'};
-plot(simout.time,[simout.data(:,1:4),simout.data(:,5:6)*100]);
+signalnames={'in','alpha','theta'};
+plot(simout.time,[simout.data(:,1),simout.data(:,2:3)]);
 legend(signalnames);
 
+[~,~]=mkdir(sprintf('data/%s',datasetname));
 save(sprintf('data/%s/%s.mat',datasetname,configname),'simout');
 
 
