@@ -46,8 +46,8 @@ plot(u)
 
 U = [t',u];
 %% 
-sim qubetemplate
-save('prbs_data1.mat','experiment')
+%sim qubetemplate
+%save('prbs_data1.mat','experiment','t')
 
 
 
