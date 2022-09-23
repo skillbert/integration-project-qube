@@ -3,15 +3,18 @@ clc; close all; clear
 %% Loading and preparing data 
 load("oldiddata/prbs_data.mat") 
 
+global datasetname
+datasetname='23sep';
+stuff = loadexp('doublet') ; 
+
 t = 0:0.02:10';
+%experiment.data      
 
-%experiment.data
+y = [stuff.alpha,stuff.theta  ] ; %output
+u = stuff.u; %input
+Ts = stuff.h ; %sampling time
 
-y = experiment.data(:,1:2) ; %output
-u = experiment.data(:,4); %input
-Ts = 0.02 ; %sampling time
-
-data = iddata(y, u, Ts, 'Name', 'Qube');
+data = iddata(y , u, Ts, 'Name', 'Qube');
 data.InputName = 'Voltage';
 data.InputUnit = 'V';
 data.OutputName = {'alpha', 'theta'};
