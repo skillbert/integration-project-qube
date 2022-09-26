@@ -78,13 +78,13 @@ init_sys.Structure.Parameters(4).Maximum = 0.1;
 %% Making intermediate model 
 
 %parameters 
-a11 = 0.0017;
-a12 = 4.0219e-04;
-a13 = 1.3158e-04;
-a14 = -0.0050;
+a11 = (C_r + (K_m*K_t)/R_m);
+a12 = (m_p*L_r^2 + J_r) ;
+a13 = ((L_p*L_r*m_p)/2);
+a14 = (-K_t/R_m) ;
 
-a21 = 0.0152 ;
-a22 = 1.3313e-04 ;
+a21 = ((L_p*g*m_p)/2);
+a22 = ((m_p*L_p^2)/4 + J_p);
 
 
 %Making the idgrey 
