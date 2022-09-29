@@ -5,7 +5,7 @@ timesraw=0:h:T;
 
 signaltime=1;
 
-amplitude=0.05;
+amplitude=0.02;
 
 u=zeros(length(timesraw),1);
 

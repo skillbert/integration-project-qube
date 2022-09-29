@@ -3,7 +3,7 @@ h=0.05;
 T=8;
 timesraw=0:h:T;
 
-amplitude=0.01;
+amplitude=0.008;
 
 u=zeros(length(timesraw),1);
 
