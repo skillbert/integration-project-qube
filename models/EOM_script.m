@@ -1,16 +1,22 @@
 %% Define our parameters
+clc;clear;
 syms J_r real positive;%moment of inertia of arm around pivot
 syms J_p real positive;%moment of inertia of around center of mass
-syms M_p real positive;%mass of pendulum
+syms m_p real positive;%mass of pendulum
+syms m_r real positive;%mass of arm
 syms L_r real positive;%length of arm
+syms L_p real positive;%length of pendulum
 syms L_pcom real positive;%position of center of mass of pendulum
+syms C_r C_p real positive;%damping constants
+syms K_t K_m R_m real %motor constants
+syms K_wire real positive % spring constant because of the wire
 
 syms g real positive;%gravity constant
 
 % generalized coordinates
 syms alpha real;%angle of arm
 syms theta real;%angle of pendulum, 0=down
-syms F real;%torque on arm
+syms u real;%input signal
 syms alpha_dot alpha_ddot real;
 syms theta_dot theta_ddot real;
 
@@ -18,20 +24,48 @@ q=[alpha;theta];
 q_dot=[alpha_dot;theta_dot];
 q_ddot=[alpha_ddot;theta_ddot];
 
-% lagrangian
-T_r = 1/2*J_r*alpha_dot^2; % rotation of arm mass
-T_p = 1/2*J_p*theta_dot^2 ... % rotation of pendulum itself
-    + 1/2*M_p*(alpha_dot*L_r+theta_dot*L_pcom*cos(theta))^2 ... % movement around arm pivot
-    + 1/2*M_p*(L_pcom*sin(theta))^2;
-% ignoring moment of inertia of pendulum rotating around pivot for now
-% also ignoring the center of mass of pendulum moving further away from
-%   pivot when theta changes
-
+% % lagrangian
+% T_r = 1/2*J_r*alpha_dot^2; % rotation of arm mass
+% T_p = 1/2*J_p*theta_dot^2 ... % rotation of pendulum itself
+%     + 1/2*M_p*(alpha_dot*L_r+theta_dot*L_pcom*cos(theta))^2 ... % movement around arm pivot
+%     + 1/2*M_p*(L_pcom*sin(theta))^2;
+% % ignoring moment of inertia of pendulum rotating around pivot for now
+% % also ignoring the center of mass of pendulum moving further away from
+% %   pivot when theta changes
+% 
+% % D= 1/2 * C_r * (alpha_dot)^2 + ...
+% %    1/2 * C_p * (theta_dot)^2 ;
+% V_p = -cos(theta)*L_pcom*M_p*g;
+% 
+% % dissipation function
 % D= 1/2 * C_r * (alpha_dot)^2 + ...
 %    1/2 * C_p * (theta_dot)^2 ;
-V_p = -cos(theta)*L_pcom*M_p*g;
+% speed components of the masses
 
-L=T_r+T_p+-V_p;
+%v_r = [0 ; 0.5*L_r*alpha_dot;0]
+v_r = [0;0;0];
+%v_p = [0.5*L_p*sin(theta)*alpha_dot ; L_r*alpha_dot + 0.5*L_p*cos(theta)*theta_dot ; 0.5*L_p*sin(theta)*theta_dot] %a bit more complex 
+v_p = [0;L_r*alpha_dot + 0.5*L_p*cos(theta)*theta_dot ; 0.5*L_p*sin(theta)*theta_dot];                             % simple version
+
+% kinetic energy function
+T =1/2 * m_r*(v_r(1)^2 +v_r(2)^2+v_r(3)^2) + ...
+   1/2 * m_p*(v_p(1)^2 +v_p(2)^2+v_p(3)^2) + ...
+   1/2 * J_r * alpha_dot^2 + ...
+   1/2 * J_p * theta_dot^2 ;
+
+% potential energy function
+V = 0.5*m_r*g*L_p*(1-cos(theta)) ...
+    + 0.5*K_wire*alpha^2;
+
+
+% dissipation function
+D= 1/2 * C_r * (alpha_dot)^2 + ...
+   1/2 * C_p * (theta_dot)^2 ;
+
+% motor torque
+tau = K_t*(u -K_m*alpha_dot)/R_m;
+
+L=T-V;
 
 %% equations of motion
 
@@ -48,53 +82,57 @@ dL_dx=simplify([
     diff(L,theta)
 ]);
 
-EOM=simplify(dL_dxdot_dt-dL_dx);
+dD_dqdot =  simplify(jacobian(D,q_dot))';
+
+EOM=simplify(dL_dxdot_dt-dL_dx+dD_dqdot)==[tau;0];
 
 % Obtain nonlinear state space
 
-sol=solve(EOM==[F;0],[theta_ddot,alpha_ddot],'ReturnConditions',true);
+sol=solve(EOM,[theta_ddot,alpha_ddot],'ReturnConditions',true);
 disp 'solution conditions'
 pretty(sol.conditions)
 
 nonlin=[sol.alpha_ddot;sol.theta_ddot];
+%% stuff
+
+params={'Length Pendulum',L_p; 'Length Arm',L_r; 'mass pendulum', m_p; 'mass arm', m_r;...
+    'pendulum inertia', J_p; 'arm inertia', J_r; 'pendulum friction coeff', C_p; 'arm friction coeff', C_r;...
+     'motor Resistance',R_m; 'Torque constant', K_t; 'back EMF constant', K_m;'gravity constant',g;'wire spring constant',K_wire};
+
+
+
 
 %% linearaize
 % Inital estimate
-syms M_r L_p
-estimates=solve([
-    M_r==0.02
-    L_p==0.075
-    
-    J_r==1/6*L_r*M_r
-    J_p==1/12*L_p*M_p
-    M_p==0.03
-    L_r==0.06
-    L_pcom==L_p/2
-    g==9.81
-]);
 
-estimatesubs=[
-    J_r,estimates.J_r
-    J_p,estimates.J_p
-    M_p,estimates.M_p
-    L_r,estimates.L_r
-    L_pcom,estimates.L_pcom
-    g,estimates.g
-];
+L_p = 0.129; %meters
+L_r = 0.085; %meters 
+m_p = 0.024; %kg 
+m_r = 0.095; %kg
+J_p = 1/12*m_p*L_p^2;
+J_r = 1/3*m_r*L_r^2;
+%J_p = 3.3e-5;
+%J_r = 5.7e-5;
+C_p = 0.0005;
+C_r = 0.0015;
 
-nonlin_est=subs(nonlin,estimatesubs(:,1),estimatesubs(:,2));
+R_m = 8.4; %ohm
+K_t = 0.042; % Nm/A
+K_m = 0.042; %Vs/rad
 
-lin_0=linearized(nonlin,q,q_dot,F,[0;0]);
-lin_pi=linearized(nonlin,q,q_dot,F,[0;pi]);
+g = 9.81;
+
+
+nonlin_est=subs(nonlin);
+
+lin_0=linearized(nonlin,q,q_dot,u,[0;0]);
+lin_pi=linearized(nonlin,q,q_dot,u,[0;pi]);
 
 bgain=0.0001;
 
-sys0=ss(lin_0.A,lin_0.B,lin_0.C,lin_0.D);
+% sys0=ss(lin_0.A,lin_0.B,lin_0.C,lin_0.D);
 
-
-
-
-
+getfunctionfile(lin_0,'auto_full',params(:,2))
 
 
 
