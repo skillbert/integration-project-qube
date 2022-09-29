@@ -24,9 +24,9 @@ legend
 
 P = [0,1e-1,0,0] ;
 P = diag(P) ;
-Q = [1e-1,1e-1, 1e-1,1e-1] ;
-Q = diag(Q) ;
-R = zeros(2) ;
+Q_K = [1e-1,1e-1, 1e-1,1e-1] ;
+Q_K = diag(Q_K) ;
+R_K = zeros(2) ;
 
 count = length(stuff.time);
 
@@ -37,13 +37,13 @@ for i=1:(count-1)
 
 %time update
 xhat =  test.A*states(:,i) + test.B*stuff.u(i) ;
-P= test.A*P*test.A' +Q ;
+P= test.A*P*test.A' +Q_K ;
 
 %measurement update
-K = P*test.C'*inv(test.C*P*test.C' + R) 
+K = P*test.C'*inv(test.C*P*test.C' + R_K) ;
 
 states(:,i+1)= xhat + K*(stuff.y(i+1,:)' -test.C*xhat) ;
-P= P-P*test.C'*inv(test.C*P*test.C' + R)*test.C*P ;
+P= P-P*test.C'*inv(test.C*P*test.C' + R_K)*test.C*P ;
 
 xhat-states(:,i+1);
 end

@@ -6,6 +6,7 @@ clc; close all; clear
 global datasetname
 datasetname='23sep_v2';
 stuff = loadexp('sweep') ; 
+datasetname='23sep_v2';
 validation_stuff= loadexp('doublet') ;
 
 
@@ -14,7 +15,7 @@ validation_stuff= loadexp('doublet') ;
 starttime = stuff.h; %seconds   set stuff.h for starting at 0
 startingnumber = floor(starttime / stuff.h) ;
 
-y = [stuff.alpha(2:end),stuff.theta(2:end) ] ; %output
+y = [detrend(stuff.alpha(2:end),1),stuff.theta(2:end) ] ; %output
 u = stuff.u(startingnumber:end-1); %input
 Ts = stuff.h ; %sampling time
 
@@ -54,7 +55,7 @@ plot(validation_data)
 L_p = 0.12 ;%meters
 L_r = 0.085 ;%meters 
 m_p = 0.024 ;%kg 
-m_r = 0.095 ;%kg
+m_r = 0.095 ;%kg  %doesn't get used 
 J_p = 1/12*m_p*L_p^2;
 J_r = 1/3*m_r*L_r^2;
 %J_p = 3.3e-5;
@@ -83,9 +84,11 @@ init_sys = idgrey(odefun,parameters,fcn_type);
 init_sys.Structure.Parameters(1).Free = false;
 init_sys.Structure.Parameters(2).Free = false;
 init_sys.Structure.Parameters(3).Free = false;
+init_sys.Structure.Parameters(4).Free = false;
 init_sys.Structure.Parameters(5).Free = false;
-init_sys.Structure.Parameters(7).Free = false;
-init_sys.Structure.Parameters(8).Free = false;
+% init_sys.Structure.Parameters(7).Free = false;
+% init_sys.Structure.Parameters(8).Free = false;
+init_sys.Structure.Parameters(9).Free = false;
 
 % specify lowerbound of params
 init_sys.Structure.Parameters(4).Minimum = 0.095;
