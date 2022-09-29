@@ -1,17 +1,27 @@
 clc; close all; clear 
 
 %% Loading and preparing data 
-load("oldiddata/prbs_data.mat") 
+% run fixpath in root folder first
 
-t = 0:0.02:10';
+global datasetname
+datasetname='23sep_v2';
+stuff = loadexp('sweep') ; 
+validation_stuff= loadexp('prbs') ;
 
-%experiment.data
 
-y = experiment.data(:,1:2) ; %output
-u = experiment.data(:,4); %input
-Ts = 0.02 ; %sampling time
+%experiment.data      
 
-data = iddata(y, u, Ts, 'Name', 'Qube');
+starttime = stuff.h; %seconds   set stuff.h for starting at 0
+startingnumber = floor(starttime / stuff.h) ;
+
+y = [stuff.alpha(startingnumber:end),stuff.theta(startingnumber:end) ] ; %output
+u = stuff.u(startingnumber:end); %input
+Ts = stuff.h ; %sampling time
+
+%data preprocessing?
+
+
+data = iddata(y , u, Ts, 'Name', 'Qube');
 data.InputName = 'Voltage';
 data.InputUnit = 'V';
 data.OutputName = {'alpha', 'theta'};
@@ -19,7 +29,22 @@ data.OutputUnit = {'rad', 'rad'};
 data.Tstart = 0;
 data.TimeUnit = 's';
 
+figure
 plot(data)
+
+%% validation data 
+validation_data = iddata([validation_stuff.alpha, validation_stuff.theta],validation_stuff.u, validation_stuff.h, 'Name', 'Validation data');
+data.InputName = 'Voltage';
+data.InputUnit = 'V';
+data.OutputName = {'alpha', 'theta'};
+data.OutputUnit = {'rad', 'rad'};
+data.Tstart = 0;
+data.TimeUnit = 's';
+
+figure
+plot(validation_data)
+
+
 
 %% Making the idgrey linear model
 
@@ -75,13 +100,14 @@ init_sys.Structure.Parameters(4).Maximum = 0.1;
 %% Making intermediate model 
 
 %parameters 
-a11 = 0.0017;
-a12 = 4.0219e-04;
-a13 = 1.3158e-04;
-a14 = -0.0050;
+g= 9.81;
+a11 = (C_r + (K_m*K_t)/R_m);
+a12 = (m_p*L_r^2 + J_r) ;
+a13 = ((L_p*L_r*m_p)/2);
+a14 = (-K_t/R_m) ;
 
-a21 = 0.0152 ;
-a22 = 1.3313e-04 ;
+a21 = ((L_p*g*m_p)/2);
+a22 = ((m_p*L_p^2)/4 + J_p);
 
 
 %Making the idgrey 
@@ -114,17 +140,28 @@ init_sys_simple = idgrey(odefun,parameters,fcn_type);
 
 %% estimating the system
 
+% complex model
 sys = greyest(data,init_sys);
 opt = compareOptions('InitialCondition','zero');
 figure
 compare(data,sys,Inf,opt)
 
+figure
+compare(validation_data,sys,Inf,opt)
+
+% intermediate model
 sys_intermediate = greyest(data,init_sys_intermediate);
 figure
 compare(data,sys_intermediate,Inf,opt)
 
+figure
+compare(validation_data,sys_intermediate,Inf,opt)
 
+% simple model
 sys_simple = greyest(data,init_sys_simple);
 figure
 compare(data,sys_simple,Inf,opt)
+
+figure
+compare(validation_data,sys_simple,Inf,opt)
 
