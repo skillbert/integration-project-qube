@@ -104,21 +104,40 @@ params={'Length Pendulum',L_p; 'Length Arm',L_r; 'mass pendulum', m_p; 'mass arm
 
 %% linearaize
 % Inital estimate
+% 
+% L_p = 0.129; %meters
+% L_r = 0.085; %meters 
+% m_p = 0.024; %kg 
+% m_r = 0.095; %kg
+% J_p = 1/12*m_p*L_p^2;
+% J_r = 1/3*m_r*L_r^2;
+% %J_p = 3.3e-5;
+% %J_r = 5.7e-5;
+% C_p = 0.0005;
+% C_r = 0.0015;
+% K_wire = 0;%nm/rad
+% 
+% R_m = 8.4; %ohm
+% K_t = 0.042; % Nm/A
+% K_m = 0.042; %Vs/rad
+% 
+% g = 9.81;
 
-L_p = 0.129; %meters
+L_p = 0.12; %meters
 L_r = 0.085; %meters 
 m_p = 0.024; %kg 
 m_r = 0.095; %kg
-J_p = 1/12*m_p*L_p^2;
-J_r = 1/3*m_r*L_r^2;
+J_p = 2.88e-05;
+J_r = 0.000142;
 %J_p = 3.3e-5;
 %J_r = 5.7e-5;
 C_p = 0.0005;
 C_r = 0.0015;
+K_wire = 0;%nm/rad
 
 R_m = 8.4; %ohm
-K_t = 0.042; % Nm/A
-K_m = 0.042; %Vs/rad
+K_t = 2.168; % Nm/A
+K_m = 0.006544; %Vs/rad
 
 g = 9.81;
 
@@ -130,17 +149,14 @@ lin_pi=linearized(nonlin,q,q_dot,u,[0;pi]);
 
 bgain=0.0001;
 
-% sys0=ss(lin_0.A,lin_0.B,lin_0.C,lin_0.D);
-
-getfunctionfile(lin_0,'auto_full',params(:,2))
-
+funcstr=getfunctionfile(lin_0,'auto_full',params(:,2));
+writelines(funcstr,'identification/auto_full.m');
 
 
+matlabFunction(nonlin_est,'Vars',{alpha;theta;alpha_dot;theta_dot;u}')
 
 
-
-
-
+sys_0=ss(double(subs(lin_0.A)),double(subs(lin_0.B)),double(subs(lin_0.C)),double(subs(lin_0.D)));
 
 
 

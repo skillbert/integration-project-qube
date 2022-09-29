@@ -16,7 +16,7 @@ lin=simplify(subs(at_eq,subvalues(:,1),subvalues(:,2)));
 ssvars=[q;q_dot;F];
 
 sys_abcd=simplify([
-    0,1,0,0,0
+    0,0,1,0,0
     0,0,0,1,0
     matrixinsert(lin(1),ssvars)'
     matrixinsert(lin(2),ssvars)'

@@ -19,6 +19,4 @@ str=[str,'A=',A(closing+1:end),';',nl];
 str=[str,'B=',B(closing+1:end),';',nl];
 str=[str,'C=',C(closing+1:end),';',nl];
 str=[str,'D=',D(closing+1:end),';',nl];
-dlmwrite([name,'.m'],str,'delimiter','');
-
 
