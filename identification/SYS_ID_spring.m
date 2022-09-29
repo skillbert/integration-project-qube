@@ -4,10 +4,10 @@ clc; close all; clear
 % run fixpath in root folder first
 %29sep_loweru
 global datasetname
-datasetname='23sep_v2';
+datasetname='29sep_loweru';
 stuff = loadexp('sweep') ; 
-datasetname='23sep_v2';
-validation_stuff= loadexp('sine') ;
+datasetname='29sep_loweru';
+validation_stuff= loadexp('prbs') ;
 
 
 %experiment.data      
@@ -66,20 +66,21 @@ C_r = 0.0015;
 R_m = 8.4 ;%ohm;
 K_t = 0.042 ;% Nm/A
 K_m = 0.042 ;%V*s/rad
+K_wire = 0.01 ;%Nm/rad
 
 %Making the idgrey 
-odefun = 'LinearQube' ;
+odefun = 'LinearQube_spring' ;
 parameters = {'Length Pendulum',L_p; 'Length Arm',L_r; 'mass pendulum', m_p; 'mass arm', m_r;...
     'pendulum inertia', J_p; 'arm inertia', J_r; 'pendulum friction coeff', C_p; 'arm friction coeff', C_r;...
-     'motor Resistance',R_m; 'Torque constant', K_t; 'back EMF constant', K_m};
+     'motor Resistance',R_m; 'Torque constant', K_t; 'back EMF constant', K_m; 'Wire torsion spring constant', K_wire};
 
 fcn_type ='c' ; %indiciating continuous linear function
 
 init_sys = idgrey(odefun,parameters,fcn_type);
 
 % specify known parameters as fixed 
-% 11 params      1  , 2 , 3  , 4  , 5  ,  6 ,  7 ,  8 , 9  , 10,  11
-% param order : L_p ,L_r, m_p, m_r, J_p, J_r, C_p, C_r, R_m, K_t, K_m
+% 11 params      1  , 2 , 3  , 4  , 5  ,  6 ,  7 ,  8 , 9  , 10,  11,  12
+% param order : L_p ,L_r, m_p, m_r, J_p, J_r, C_p, C_r, R_m, K_t, K_m, K_wire
 
 init_sys.Structure.Parameters(1).Free = false;
 init_sys.Structure.Parameters(2).Free = false;
@@ -89,6 +90,7 @@ init_sys.Structure.Parameters(5).Free = false;
 % init_sys.Structure.Parameters(7).Free = false;
 % init_sys.Structure.Parameters(8).Free = false;
 init_sys.Structure.Parameters(9).Free = false;
+init_sys.Structure.Parameters(12).Free = false;
 
 % specify lowerbound of params
 init_sys.Structure.Parameters(4).Minimum = 0.095;
@@ -99,6 +101,7 @@ init_sys.Structure.Parameters(9).Minimum = 0;
 init_sys.Structure.Parameters(10).Minimum = 0;
 init_sys.Structure.Parameters(11).Minimum = 0;
 init_sys.Structure.Parameters(4).Maximum = 0.1;
+init_sys.Structure.Parameters(12).Minimum = 0.001;
 
 %% Making intermediate model 
 
@@ -114,7 +117,7 @@ a22 = ((m_p*L_p^2)/4 + J_p);
 
 
 %Making the idgrey 
-odefun = 'IntermediateModel' ;
+odefun = 'IntermediateModel_spring' ;
 parameters = {a11;a12;a13;a14;a21;a22};
 
 fcn_type ='c' ; %indiciating continuous linear function
@@ -126,16 +129,18 @@ init_sys_intermediate = idgrey(odefun,parameters,fcn_type);
 
 %% Making simple model 
 %parameters 
+A31 = -36.7456 ;
 A32 = 55.15 ;
 A33 = -6.283;
+A41 = 36.3183; 
 A42 = -168.6 ;
 A43 =  6.21 ;
 
 B3 =18.37 ;
 B4 =-18.16;
 %Making the idgrey 
-odefun = 'SimpleModel' ;
-parameters = {A32;A33;A42;A43;B3;B4};
+odefun = 'SimpleModel_spring' ;
+parameters = {A31;A32;A33;A41;A42;A43;B3;B4};
 
 fcn_type ='c' ; %indiciating continuous linear function
 
@@ -167,4 +172,3 @@ compare(data,sys_simple,Inf,opt)
 
 figure
 compare(validation_data,sys_simple,Inf,opt)
-
