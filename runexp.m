@@ -7,7 +7,8 @@ h=0.01;%sampling time
 T=10;%experiment time
 
 run(sprintf('experiments/%s',configname));
-sim('hardware/qubetemplate',T);
+% sim('hardware/qubetemplate',T);
+sim('hardware/trivialfeedback',T);
 signalnames={'in','alpha','theta'};
 plot(simout.time,[simout.data(:,1),simout.data(:,2:3)]);
 legend(signalnames);
