@@ -6,7 +6,7 @@ clc; close all; clear
 global datasetname
 datasetname='23sep_v2';
 stuff = loadexp('sweep') ; 
-validation_stuff= loadexp('prbs') ;
+validation_stuff= loadexp('doublet') ;
 
 
 %experiment.data      
@@ -14,8 +14,8 @@ validation_stuff= loadexp('prbs') ;
 starttime = stuff.h; %seconds   set stuff.h for starting at 0
 startingnumber = floor(starttime / stuff.h) ;
 
-y = [stuff.alpha(startingnumber:end),stuff.theta(startingnumber:end) ] ; %output
-u = stuff.u(startingnumber:end); %input
+y = [stuff.alpha(2:end),stuff.theta(2:end) ] ; %output
+u = stuff.u(startingnumber:end-1); %input
 Ts = stuff.h ; %sampling time
 
 %data preprocessing?
@@ -33,7 +33,7 @@ figure
 plot(data)
 
 %% validation data 
-validation_data = iddata([validation_stuff.alpha, validation_stuff.theta],validation_stuff.u, validation_stuff.h, 'Name', 'Validation data');
+validation_data = iddata([validation_stuff.alpha(2:end), validation_stuff.theta(2:end)],validation_stuff.u(1:end-1), validation_stuff.h, 'Name', 'Validation data');
 data.InputName = 'Voltage';
 data.InputUnit = 'V';
 data.OutputName = {'alpha', 'theta'};
