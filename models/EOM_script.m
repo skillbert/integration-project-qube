@@ -67,6 +67,8 @@ tau = K_t*(u -K_m*alpha_dot)/R_m;
 
 L=T-V;
 
+
+
 %% equations of motion
 
 dL_dxdot=simplify([
@@ -131,7 +133,7 @@ J_p = 2.88e-05;
 J_r = 0.000142;
 %J_p = 3.3e-5;
 %J_r = 5.7e-5;
-C_p = 0.0005;
+C_p = 0.0001;
 C_r = 0.0015;
 K_wire = 0;%nm/rad
 
@@ -157,6 +159,19 @@ matlabFunction(nonlin_est,'Vars',{alpha;theta;alpha_dot;theta_dot;u}')
 
 
 sys_0=ss(double(subs(lin_0.A)),double(subs(lin_0.B)),double(subs(lin_0.C)),double(subs(lin_0.D)));
+
+
+
+h=0.01;
+discrete_0=c2d(sys_0,h);
+
+[K,S,e] = dlqr(discrete_0.A,discrete_0.B,eye(1),1,zeros(4,1));
+
+
+
+
+
+
 
 
 
