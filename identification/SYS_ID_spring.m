@@ -52,7 +52,7 @@ plot(validation_data)
 
 
 %parameters 
-L_p = 0.12 ;%meters
+L_p = 0.123 ;%meters
 L_r = 0.085 ;%meters 
 m_p = 0.024 ;%kg 
 m_r = 0.095 ;%kg  %doesn't get used 
@@ -61,6 +61,7 @@ J_r = 1/3*m_r*L_r^2;
 %J_p = 3.3e-5;
 %J_r = 5.7e-5;
 C_p = 0.0001 ;
+C_p = 0.000012 ;
 C_r = 0.0015;
 
 R_m = 8.4 ;%ohm;
@@ -88,9 +89,9 @@ init_sys.Structure.Parameters(3).Free = false;
 init_sys.Structure.Parameters(4).Free = false;
 init_sys.Structure.Parameters(5).Free = false;
 init_sys.Structure.Parameters(7).Free = false;
-init_sys.Structure.Parameters(8).Free = false;
+%init_sys.Structure.Parameters(8).Free = false;
 init_sys.Structure.Parameters(9).Free = false;
-init_sys.Structure.Parameters(12).Free = false;
+%init_sys.Structure.Parameters(12).Free = false;
 
 % specify lowerbound of params
 init_sys.Structure.Parameters(4).Minimum = 0.095;
