@@ -7,7 +7,7 @@ global datasetname
 datasetname='29sep_loweru';
 stuff = loadexp('sweep') ; 
 datasetname='29sep_loweru';
-validation_stuff= loadexp('prbs') ;
+validation_stuff= loadexp('doublet') ;
 
 
 %experiment.data      
@@ -87,8 +87,8 @@ init_sys.Structure.Parameters(2).Free = false;
 init_sys.Structure.Parameters(3).Free = false;
 init_sys.Structure.Parameters(4).Free = false;
 init_sys.Structure.Parameters(5).Free = false;
-% init_sys.Structure.Parameters(7).Free = false;
-% init_sys.Structure.Parameters(8).Free = false;
+init_sys.Structure.Parameters(7).Free = false;
+init_sys.Structure.Parameters(8).Free = false;
 init_sys.Structure.Parameters(9).Free = false;
 init_sys.Structure.Parameters(12).Free = false;
 
