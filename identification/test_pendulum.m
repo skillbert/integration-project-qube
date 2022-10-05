@@ -28,11 +28,17 @@ t= 1.33:0.01:20;
 u = zeros(size(t));
 y =lsim(sys,u,t,x0) ;
 
+figure
+plot(stuff.time(133:end),stuff.theta(133:end))
+title('Pendulum only experiment')
+xlabel('time [s]')
+ylabel('\theta angle [radians]')
+
  figure
  plot(t,y,'--',stuff.time(133:end),stuff.theta(133:end))
  legend('simulation','real pendulum')
- title('Pendulumu only experiment')
+ title('Pendulum only experiment')
  xlabel('time [s]')
- ylabel('angle [radians]')
+ ylabel('\theta angle [radians]')
 
 

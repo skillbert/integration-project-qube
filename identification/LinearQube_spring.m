@@ -1,10 +1,9 @@
-function [A,B,C,D] = LinearQube(L_p ,L_r, m_p, m_r, J_p, J_r, C_p, C_r, R_m, K_t, K_m,K_wire,Ts)
+function [A,B,C,D] = LinearQube(L_p ,L_r, m_p, J_r, C_p, C_r, R_m, K_t, K_m,K_wire,Ts)
 
 % L_p = Length of pendulum in [meters]
 % L_r = Length of arm in [meters]
 % m_p = mass of pendulum in [kg]
 % m_r = mass of arm in [kg]
-% J_p = Moment of inertia pendulum in [kg*m^2]
 % J_r = Moment of inertia arm in [kg*m^2]
 
 % C_p = friction coefficient of pendulum in [N*m*s/rad]
@@ -20,11 +19,11 @@ g = 9.81 ; % gravity [m/s^2]
 
 
                                                                                                                                                                                    
-A1 = [-(K_wire*((m_p*L_p^2)/4 + J_p))/(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4),            (L_p^2*L_r*g*m_p^2)/(4*(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4)), -(((m_p*L_p^2)/4 + J_p)*(C_r + (K_m*K_t)/R_m))/(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4),    (C_p*L_p*L_r*m_p)/(2*(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4))];
-A2 = [       (K_wire*L_p*L_r*m_p)/(2*(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4)), -(L_p*g*m_p*(m_p*L_r^2 + J_r))/(2*(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4)),        (L_p*L_r*m_p*(C_r + (K_m*K_t)/R_m))/(2*(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4)), -(C_p*(m_p*L_r^2 + J_r))/(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4)];
+A1 = [   (K_wire*L_p^2*m_p)/(3*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3)),          -(L_p^2*L_r*g*m_p^2)/(4*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3)),    (L_p^2*m_p*(C_r + (K_m*K_t)/R_m))/(3*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3)),  -(C_p*L_p*L_r*m_p)/(2*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3))];
+A2 = [-(K_wire*L_p*L_r*m_p)/(2*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3)), (L_p*g*m_p*(m_p*L_r^2 + J_r))/(2*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3)), -(L_p*L_r*m_p*(C_r + (K_m*K_t)/R_m))/(2*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3)), (C_p*(m_p*L_r^2 + J_r))/((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3)];
 
-B1 = (K_t*((m_p*L_p^2)/4 + J_p))/(R_m*(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4));
-B2 = -(K_t*L_p*L_r*m_p)/(2*R_m*(((m_p*L_p^2)/4 + J_p)*(m_p*L_r^2 + J_r) - (L_p^2*L_r^2*m_p^2)/4));
+B1 =  -(K_t*L_p^2*m_p)/(3*R_m*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3));
+B2 =  (K_t*L_p*L_r*m_p)/(2*R_m*((L_p^2*L_r^2*m_p^2)/4 - (L_p^2*m_p*(m_p*L_r^2 + J_r))/3));
   
 
 A = [0 0 1 0; 0 0 0 1; A1; A2];
