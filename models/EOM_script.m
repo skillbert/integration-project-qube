@@ -149,23 +149,16 @@ nonlin_est=subs(nonlin);
 lin_0=linearized(nonlin,q,q_dot,u,[0;0]);
 lin_pi=linearized(nonlin,q,q_dot,u,[0;pi]);
 
-bgain=0.0001;
-
 funcstr=getfunctionfile(lin_0,'auto_full',params(:,2));
 writelines(funcstr,'identification/auto_full.m');
 
 
-matlabFunction(nonlin_est,'Vars',{alpha;theta;alpha_dot;theta_dot;u}')
+nonlinfn=matlabFunction(nonlin_est,'Vars',{alpha;theta;alpha_dot;theta_dot;u}')
 
 
 sys_0=ss(double(subs(lin_0.A)),double(subs(lin_0.B)),double(subs(lin_0.C)),double(subs(lin_0.D)));
+sys_pi=ss(double(subs(lin_pi.A)),double(subs(lin_pi.B)),double(subs(lin_pi.C)),double(subs(lin_pi.D)));
 
-
-
-h=0.01;
-discrete_0=c2d(sys_0,h);
-
-[K,S,e] = dlqr(discrete_0.A,discrete_0.B,eye(1),1,zeros(4,1));
 
 
 
