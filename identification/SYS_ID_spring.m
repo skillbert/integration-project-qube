@@ -5,7 +5,7 @@ clc; close all; clear
 %29sep_loweru
 global datasetname
 %datasetname='29sep_loweru';
-datasetname='30sep';
+datasetname='6oct';
 stuff = loadexp('prbs') ; 
 %datasetname='30sep';
 %datasetname='29sep_loweru';
@@ -91,7 +91,7 @@ m_r = 0.095 ;%kg  %doesn't get used
 J_p = 1/12*m_p*L_p^2;
 J_r = 1/3*m_r*L_r^2;
 C_p = 0.000012 ;
-C_p = 0;
+%C_p = 0;
 C_r = 0.0015;
 
 R_m = 8.4 ;%ohm;

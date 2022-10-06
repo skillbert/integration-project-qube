@@ -150,7 +150,7 @@ lin_0=linearized(nonlin,q,q_dot,u,[0;0]);
 lin_pi=linearized(nonlin,q,q_dot,u,[0;pi]);
 
 funcstr=getfunctionfile(lin_0,'auto_full',params(:,2));
-writelines(funcstr,'identification/auto_full.m');
+% writelines(funcstr,'identification/auto_full.m');
 
 
 nonlinfn=matlabFunction(nonlin_est,'Vars',{alpha;theta;alpha_dot;theta_dot;u}')
