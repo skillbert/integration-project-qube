@@ -9,7 +9,8 @@ datasetname='6oct';
 stuff = loadexp('prbs') ; 
 %datasetname='30sep';
 %datasetname='29sep_loweru';
-validation_stuff= loadexp('sweep') ;
+validation_stuff= loadexp('doublet') ;
+%validation2_stuff= loadexp('prbs') ;
 
 
 %experiment.data      
@@ -48,6 +49,16 @@ data.TimeUnit = 's';
 
 figure
 plot(validation_data)
+
+
+% validation2_data = iddata([validation2_stuff.alpha(2:end), validation2_stuff.theta(2:end)],validation2_stuff.u(1:end-1), validation2_stuff.h, 'Name', 'Validation data 2');
+% data.InputName = 'Voltage';
+% data.InputUnit = 'V';
+% data.OutputName = {'alpha', 'theta'};
+% data.OutputUnit = {'rad', 'rad'};
+% data.Tstart = 0;
+% data.TimeUnit = 's';
+
 
 % %% plotting different inputs for overleaf
 % 
@@ -219,3 +230,21 @@ compare(data,sys_simple,Inf,opt)
 
 figure
 compare(validation_data,sys_simple,Inf,opt)
+
+%% scoring system
+
+% [~,fit11,~] = compare(data,sys,Inf,opt);
+% [~,fit12,~] = compare(validation_data,sys,Inf,opt);
+% [~,fit13,~] = compare(validation2_data,sys,Inf,opt);
+% 
+% [~,fit21,~] = compare(data,sys_intermediate,Inf,opt);
+% [~,fit22,~] = compare(validation_data,sys_intermediate,Inf,opt);
+% [~,fit23,~] = compare(validation2_data,sys_intermediate,Inf,opt);
+% 
+% [~,fit31,~] = compare(data,sys_simple,Inf,opt);
+% [~,fit32,~] = compare(validation_data,sys_simple,Inf,opt);
+% [~,fit33,~] = compare(validation2_data,sys_simple,Inf,opt);
+% 
+% score_complex = sum(fit11+fit12+fit13)
+% score_intermediate = sum(fit21+fit22+fit23)
+% score_simple = sum(fit31+fit32+fit33)
