@@ -8,7 +8,7 @@
 
 %Ts=0.05 ;
 
-disc_sys = ss(sys.A,sys.B,sys.C,sys.D);
+disc_sys = ss(sys_intermediate.A,sys_intermediate.B,sys_intermediate.C,sys_intermediate.D);
 
 test = c2d(disc_sys,Ts);
 
@@ -51,13 +51,10 @@ end
 eig(test.A-K*test.C)
 log(eig(test.A-K*test.C))/Ts
 
-figure
-plot(stuff.time,stuff.y(:,1),stuff.time,states(1,:)')
-legend
 
 figure
-plot(stuff.time,states(1,:),stuff.time,states(3,:))
-legend
+plot(stuff.time,states)
+legend('\alpha','\theta','dot \alpha','dot \theta')
 
 %% LQR stuff 
 
