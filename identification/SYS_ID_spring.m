@@ -5,11 +5,11 @@ clc; close all; clear
 %29sep_loweru
 global datasetname
 %datasetname='29sep_loweru';
-datasetname='6oct';
+datasetname='13oct';
 stuff = loadexp('prbs') ; 
 %datasetname='30sep';
 %datasetname='29sep_loweru';
-validation_stuff= loadexp('doublet') ;
+validation_stuff= loadexp('sweep') ;
 %validation2_stuff= loadexp('prbs') ;
 
 
@@ -18,7 +18,8 @@ validation_stuff= loadexp('doublet') ;
 starttime = stuff.h; %seconds   set stuff.h for starting at 0
 startingnumber = floor(starttime / stuff.h) ;
 
-y = [detrend(stuff.alpha(2:end),1),stuff.theta(2:end) ] ; %output
+y = [detrend(stuff.alpha(2:end)),stuff.theta(2:end) ] ; %output
+%y = [stuff.alpha(2:end),stuff.theta(2:end) ] ; %output
 u = stuff.u(startingnumber:end-1); %input
 Ts = stuff.h ; %sampling time
 
