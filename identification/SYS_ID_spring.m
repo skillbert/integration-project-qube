@@ -129,13 +129,22 @@ K_wire = 0.01 ;%Nm/rad
 
 %Making the idgrey 
 odefun = 'LinearQube_spring' ;
-parameters = {'Length Pendulum',L_p; 'Length Arm',L_r; 'mass pendulum', m_p;...
-     'arm inertia', J_r; 'pendulum friction coeff', C_p; 'arm friction coeff', C_r;...
-     'motor Resistance',R_m; 'Torque constant', K_t; 'back EMF constant', K_m; 'Wire torsion spring constant', K_wire};
+parameters_full = {
+    'Length Pendulum',L_p
+    'Length Arm',L_r
+    'mass pendulum', m_p
+    'arm inertia', J_r
+    'pendulum friction coeff', C_p
+    'arm friction coeff',C_r
+    'motor Resistance',R_m
+    'Torque constant', K_t
+    'back EMF constant', K_m
+    'Wire torsion spring constant', K_wire
+};
 
 fcn_type ='c' ; %indiciating continuous linear function
 
-init_sys = idgrey(odefun,parameters,fcn_type);
+init_sys = idgrey(odefun,parameters_full,fcn_type);
 
 % specify known parameters as fixed 
 % 11 params      1  , 2 , 3  , 4  , 5  ,  6 ,  7 ,  8 , 9  , 10,  
@@ -177,11 +186,11 @@ a22 = ((m_p*L_p^2)/4 + J_p);
 
 %Making the idgrey 
 odefun = 'IntermediateModel_spring' ;
-parameters = {a11;a12;a13;a14;a21;a22};
+parameters_simple = {a11;a12;a13;a14;a21;a22};
 
 fcn_type ='c' ; %indiciating continuous linear function
 
-init_sys_intermediate = idgrey(odefun,parameters,fcn_type);
+init_sys_intermediate = idgrey(odefun,parameters_simple,fcn_type);
 
 
 
@@ -199,11 +208,11 @@ B3 =18.37 ;
 B4 =-18.16;
 %Making the idgrey 
 odefun = 'SimpleModel_spring' ;
-parameters = {A31;A32;A33;A41;A42;A43;B3;B4};
+parameters_black = {A31;A32;A33;A41;A42;A43;B3;B4};
 
 fcn_type ='c' ; %indiciating continuous linear function
 
-init_sys_simple = idgrey(odefun,parameters,fcn_type);
+init_sys_simple = idgrey(odefun,parameters_black,fcn_type);
 
 %% estimating the system
 
