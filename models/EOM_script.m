@@ -1,5 +1,4 @@
 %% Define our parameters
-clc;clear;
 syms J_r real positive;%moment of inertia of arm around pivot
 syms J_p real positive;%moment of inertia of around center of mass
 syms m_p real positive;%mass of pendulum
@@ -42,6 +41,8 @@ q_ddot=[alpha_ddot;theta_ddot];
 %    1/2 * C_p * (theta_dot)^2 ;
 % speed components of the masses
 
+J_p=1/12*m_p*L_p^2;
+
 %v_r = [0 ; 0.5*L_r*alpha_dot;0]
 v_r = [0;0;0];
 %v_p = [0.5*L_p*sin(theta)*alpha_dot ; L_r*alpha_dot + 0.5*L_p*cos(theta)*theta_dot ; 0.5*L_p*sin(theta)*theta_dot] %a bit more complex 
@@ -54,7 +55,7 @@ T =1/2 * m_r*(v_r(1)^2 +v_r(2)^2+v_r(3)^2) + ...
    1/2 * J_p * theta_dot^2 ;
 
 % potential energy function
-V = 0.5*m_r*g*L_p*(1-cos(theta)) ...
+V = m_p*g*(0.5*L_p)*(1-cos(theta)) ...
     + 0.5*K_wire*alpha^2;
 
 
@@ -84,7 +85,7 @@ dL_dx=simplify([
     diff(L,theta)
 ]);
 
-dD_dqdot =  simplify(jacobian(D,q_dot))';
+dD_dqdot = simplify(jacobian(D,q_dot))';
 
 EOM=simplify(dL_dxdot_dt-dL_dx+dD_dqdot)==[tau;0];
 
@@ -97,54 +98,27 @@ pretty(sol.conditions)
 nonlin=[sol.alpha_ddot;sol.theta_ddot];
 %% stuff
 
-params={'Length Pendulum',L_p; 'Length Arm',L_r; 'mass pendulum', m_p; 'mass arm', m_r;...
-    'pendulum inertia', J_p; 'arm inertia', J_r; 'pendulum friction coeff', C_p; 'arm friction coeff', C_r;...
-     'motor Resistance',R_m; 'Torque constant', K_t; 'back EMF constant', K_m;'gravity constant',g;'wire spring constant',K_wire};
+params = {
+    'Length Pendulum',L_p
+    'Length Arm',L_r
+    'mass pendulum', m_p
+    'arm inertia', J_r
+    'pendulum friction coeff', C_p
+    'arm friction coeff',C_r
+    'motor Resistance',R_m
+    'Torque constant', K_t
+    'back EMF constant', K_m
+    'Wire torsion spring constant', K_wire
+};
+paramsym=params(:,2);
 
-
+%run SYS_ID_spring to get sys
+paramest=num2cell(sys.param);
 
 
 %% linearaize
-% Inital estimate
-% 
-% L_p = 0.129; %meters
-% L_r = 0.085; %meters 
-% m_p = 0.024; %kg 
-% m_r = 0.095; %kg
-% J_p = 1/12*m_p*L_p^2;
-% J_r = 1/3*m_r*L_r^2;
-% %J_p = 3.3e-5;
-% %J_r = 5.7e-5;
-% C_p = 0.0005;
-% C_r = 0.0015;
-% K_wire = 0;%nm/rad
-% 
-% R_m = 8.4; %ohm
-% K_t = 0.042; % Nm/A
-% K_m = 0.042; %Vs/rad
-% 
-% g = 9.81;
-
-L_p = 0.12; %meters
-L_r = 0.085; %meters 
-m_p = 0.024; %kg 
-m_r = 0.095; %kg
-J_p = 2.88e-05;
-J_r = 0.000142;
-%J_p = 3.3e-5;
-%J_r = 5.7e-5;
-C_p = 0.0001;
-C_r = 0.0015;
-K_wire = 0;%nm/rad
-
-R_m = 8.4; %ohm
-K_t = 2.168; % Nm/A
-K_m = 0.006544; %Vs/rad
-
-g = 9.81;
-
-
-nonlin_est=subs(nonlin);
+nonlin=subs(nonlin,{g},{9.81});
+nonlin_est=subs(nonlin,paramsym,paramest);
 
 lin_0=linearized(nonlin,q,q_dot,u,[0;0]);
 lin_pi=linearized(nonlin,q,q_dot,u,[0;pi]);
@@ -156,8 +130,8 @@ funcstr=getfunctionfile(lin_0,'auto_full',params(:,2));
 nonlinfn=matlabFunction(nonlin_est,'Vars',{alpha;theta;alpha_dot;theta_dot;u}')
 
 
-sys_0=ss(double(subs(lin_0.A)),double(subs(lin_0.B)),double(subs(lin_0.C)),double(subs(lin_0.D)));
-sys_pi=ss(double(subs(lin_pi.A)),double(subs(lin_pi.B)),double(subs(lin_pi.C)),double(subs(lin_pi.D)));
+sys_0=ss(double(subs(lin_0.A,paramsym,paramest)),double(subs(lin_0.B,paramsym,paramest)),double(subs(lin_0.C,paramsym,paramest)),double(subs(lin_0.D,paramsym,paramest)));
+sys_pi=ss(double(subs(lin_pi.A,paramsym,paramest)),double(subs(lin_pi.B,paramsym,paramest)),double(subs(lin_pi.C,paramsym,paramest)),double(subs(lin_pi.D,paramsym,paramest)));
 
 
 
