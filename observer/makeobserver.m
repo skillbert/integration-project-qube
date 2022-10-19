@@ -22,4 +22,9 @@ pDisc=exp(pCont.*h);%poles in z-domain
 disc=place(discrete_eq.A',discrete_eq.C',pDisc)'
 
 
+KK=ss([],[],[],K,h);
+fs=ss(discrete_eq.A,discrete_eq.B,eye(4),[],h);
+constgain=ones(1,4)./dcgain(feedback(fs,KK))';
+constgain(2:4)=0;
+
 

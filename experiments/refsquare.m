@@ -1,4 +1,5 @@
 
+T=30;
 timesraw=0:h:T;
 
 steptime=6;
