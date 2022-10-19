@@ -3,7 +3,7 @@ timesraw=0:h:T;
 
 steptime=5;
 stepindexstart=steptime/h  + 1;
-amplitude=pi/2;
+amplitude=1;
 u=[
     zeros(4,length(timesraw))
 ];

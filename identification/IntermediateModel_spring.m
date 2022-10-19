@@ -1,6 +1,7 @@
 function [A,B,C,D] = SimpleModel(a11, a12, a13, a14, a21, a22,Ts)
 
 C_p = 0;
+%K_wire = 0.01;
 K_wire = 0.003987 ;
 sigma = a12*a22 - a13^2 ;
 
