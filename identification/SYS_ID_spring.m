@@ -5,12 +5,13 @@ clc; close all; clear
 %29sep_loweru
 global datasetname
 %datasetname='29sep_loweru';
+%datasetname='30sep';
 datasetname='13oct';
 stuff = loadexp('prbs') ; 
 %datasetname='30sep';
 %datasetname='29sep_loweru';
 validation_stuff= loadexp('sweep') ;
-%validation2_stuff= loadexp('prbs') ;
+%validation2_stuff= loadexp('sweep') ;
 
 
 %experiment.data      
@@ -197,15 +198,15 @@ init_sys_intermediate = idgrey(odefun,parameters_simple,fcn_type);
 
 %% Making simple model 
 %parameters 
-A31 = -36.7456 ;
-A32 = 55.1525 ;
-A33 = -6.2835;
-A41 = 36.3183; 
-A42 = -168.6 ;
-A43 =  6.21 ;
+A31 = init_sys.A(3,1) ;
+A32 = init_sys.A(3,2) ;
+A33 = init_sys.A(3,3);
+A41 = init_sys.A(4,1); 
+A42 = init_sys.A(4,2) ;
+A43 = init_sys.A(4,3);
 
-B3 =18.37 ;
-B4 =-18.16;
+B3 =init_sys.B(3) ;
+B4 =init_sys.B(4);
 %Making the idgrey 
 odefun = 'SimpleModel_spring' ;
 parameters_black = {A31;A32;A33;A41;A42;A43;B3;B4};
@@ -255,6 +256,15 @@ compare(validation_data,sys_simple,Inf,opt)
 % [~,fit32,~] = compare(validation_data,sys_simple,Inf,opt);
 % [~,fit33,~] = compare(validation2_data,sys_simple,Inf,opt);
 % 
-% score_complex = sum(fit11+fit12+fit13)
-% score_intermediate = sum(fit21+fit22+fit23)
-% score_simple = sum(fit31+fit32+fit33)
+% score_complex = sum(fit11+fit12+fit13)/6
+% var_complex = std([fit11;fit12;fit13],1) 
+% 
+% score_intermediate = sum(fit21+fit22+fit23)/6
+% var_intermediate = std([fit21;fit22;fit23],1) 
+% 
+% score_simple = sum(fit31+fit32+fit33)/6
+% var_simple = std([fit31;fit32;fit33],1) 
+
+
+
+
