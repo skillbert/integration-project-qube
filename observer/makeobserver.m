@@ -1,10 +1,12 @@
 
 h=0.005;
 % to import from sys_id_spring
-sys_0=ss(sys_simple);
+%sys_0=ss(sys_simple);
+sys_0 = ss(sys) ;
 
 sys_pi=ss(sys_0.A.*[1,1,1,1;1,1,1,1;1,1,1,-1;-1,-1,-1,1],diag([1,1,1,-1])*sys_0.B,sys_0.C,sys_0.D);
 
+sys_for_mpc = ss(sys_pi.A,sys_pi.B,eye(4),[]);
 sys_eq=sys_pi;
 
 discrete_eq=c2d(sys_eq,h);
@@ -16,7 +18,7 @@ poles =log(e)/h;
 % pDisc = real(exp(2*poles*h));
 % pDisc(4)=0.5;
 
-pCont=[-80,-81,-60,-61];%poles in s-domain
+pCont=1*[-80,-81,-50,-51];%poles in s-domain
 pDisc=exp(pCont.*h);%poles in z-domain
 % cont=place(sys_0.A',sys_0.C',pCont)'
 disc=place(discrete_eq.A',discrete_eq.C',pDisc)'

@@ -2,9 +2,9 @@
 T=30;
 timesraw=0:h:T;
 
-steptime=20;
+steptime=10;
 
-amplitude=pi/2;
+amplitude=pi/3;
 u=[
     amplitude*square(1/steptime*timesraw*2*pi)
     zeros(3,length(timesraw))
