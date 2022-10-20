@@ -1,11 +1,11 @@
 
 h=0.005;
 % to import from sys_id_spring
-% sys_0=ss(sys_simple);
+sys_0=ss(sys_simple);
 
 sys_pi=ss(sys_0.A.*[1,1,1,1;1,1,1,1;1,1,1,-1;-1,-1,-1,1],diag([1,1,1,-1])*sys_0.B,sys_0.C,sys_0.D);
 
-sys_eq=sys_0;
+sys_eq=sys_pi;
 
 discrete_eq=c2d(sys_eq,h);
 
