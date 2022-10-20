@@ -9,7 +9,7 @@ sys_eq=sys_pi;
 
 discrete_eq=c2d(sys_eq,h);
 
-[K,S,e] = dlqr(discrete_eq.A,discrete_eq.B,diag([20,5,1,1]),0.1);
+[K,S,e] = dlqr(discrete_eq.A,discrete_eq.B,diag([30,1,1,1]),1);
 K;
 
 poles =log(e)/h;
