@@ -115,19 +115,21 @@ paramsym=params(:,2);
 %run SYS_ID_spring to get sys
 paramest=num2cell(sys.param);
 
+paramsym=[paramsym(:);g];
+paramest=[paramest(:);9.81];
+
 
 %% linearaize
-nonlin=subs(nonlin,{g},{9.81});
 nonlin_est=subs(nonlin,paramsym,paramest);
 
 lin_0=linearized(nonlin,q,q_dot,u,[0;0]);
 lin_pi=linearized(nonlin,q,q_dot,u,[0;pi]);
 
-funcstr=getfunctionfile(lin_0,'auto_full',params(:,2));
+% funcstr=getfunctionfile(lin_0,'auto_full',params(:,2));
 % writelines(funcstr,'identification/auto_full.m');
 
 
-matlabFunction(nonlin_est,'Vars',{alpha;theta;alpha_dot;theta_dot;u}','File','models/generated_nonlinfit','Outputs',{'x_ddot'});
+matlabFunction(nonlin_est,'Vars',{[alpha;theta];[alpha_dot;theta_dot];u}','File','models/generated_nonlinfit','Outputs',{'x_ddot'});
 
 
 sys_0=ss(double(subs(lin_0.A,paramsym,paramest)),double(subs(lin_0.B,paramsym,paramest)),double(subs(lin_0.C,paramsym,paramest)),double(subs(lin_0.D,paramsym,paramest)));
@@ -143,10 +145,12 @@ E=V_p+T_p;
 syms step real
 alpha_ddot_next=nonlin(1);
 theta_ddot_next=nonlin(2);
-alpha_dot_next=alpha_dot+alpha_ddot_next*step;
-theta_dot_next=theta_dot+theta_ddot_next*step;
-alpha_next=alpha_dot_next*step;
-theta_next=theta_dot_next*step;
+nonlin_discrete=[
+    alpha+alpha_dot*step
+    theta+theta_dot*step
+    alpha_dot+alpha_ddot_next*step
+    theta_dot+theta_ddot_next*step
+];
 
 % pretty(subs(subs(subs(E,paramsym,paramest),{alpha,theta,alpha_dot,theta_dot},{alpha+alpha_dot+alpha_ddot,theta+theta_dot+theta_ddot,alpha_dot+alpha_ddot,theta_dot+theta_ddot}),{alpha_ddot}));
 %change of energy for input u
@@ -155,13 +159,37 @@ dEdtu=simplify(jacobian(E,[alpha_dot,theta_dot])*diff(nonlin,u));
 
 energy=subs(dEdtu,paramsym,paramest);
 
-denergy=subs(E,{alpha,theta,alpha_dot,theta_dot},{alpha_next,theta_next,alpha_dot_next,theta_dot_next})-E;
-denergy_posu=subs(subs(denergy,paramsym,paramest),{alpha,g,step,alpha_dot,u},{0,9.81,0.1,0,0.2});
-denergy_negu=subs(subs(denergy,paramsym,paramest),{alpha,g,step,alpha_dot,u},{0,9.81,0.1,0,-0.2});
+% denergy=subs(E,{alpha,theta,alpha_dot,theta_dot},{alpha_next,theta_next,alpha_dot_next,theta_dot_next})-E;
+% denergy_posu=subs(subs(denergy,paramsym,paramest),{alpha,g,step,alpha_dot,u},{0,9.81,0.02,0,1});
+% denergy_negu=subs(subs(denergy,paramsym,paramest),{alpha,g,step,alpha_dot,u},{0,9.81,0.02,0,-1});
 
-figure(1);
-fsurf(denergy_posu);
-figure(2);
-fsurf(denergy_negu);
+% figure(1);
+% fsurf(denergy_posu);
+% figure(2);
+% fsurf(denergy_negu);
+
+% energyfn=subs(subs(denergy,paramsym,paramest),{g},{9.81});
+
+massoffset=alpha*J_r+(alpha+sin(theta)*L_p/2)*L_r*m_p;
+
+nonlin_step_euler=simplify(subs(nonlin_discrete,paramsym,paramest));
+
+x=[alpha;theta;alpha_dot;theta_dot];
+% ['delta_e=',char(matlabFunction(energyfn,'Vars',{alpha,theta,alpha_dot,theta_dot,step,u})),';']
+[
+'stepx=',char(matlabFunction(nonlin_step_euler,'Vars',{x,u,step})),';',newline(),...
+'energy=',char(matlabFunction(subs(E,paramsym,paramest),'Vars',{x})),';',newline(),...
+'massoffset=',char(matlabFunction(subs(massoffset,paramsym,paramest),'Vars',{x})),';',newline(),...
+]
+
+matlabFunction(nonlin_step_euler,'Vars',{x;u;step}','File','models/generated_nonlineuler','Outputs',{'xnext'});
+
+
+
+
+
+
+
+
 
 

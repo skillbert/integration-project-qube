@@ -1,4 +1,4 @@
-
+x0=[0;0];
 h=0.005;
 % to import from sys_id_spring
 sys_0=ss(sys_simple);
@@ -20,7 +20,7 @@ poles =log(e)/h;
 
 pCont=1*[-80,-81,-50,-51];%poles in s-domain
 pDisc=exp(pCont.*h);%poles in z-domain
-% cont=place(sys_0.A',sys_0.C',pCont)'
+cont=place(sys_eq.A',sys_eq.C',pCont)';
 disc=place(discrete_eq.A',discrete_eq.C',pDisc)'
 
 
