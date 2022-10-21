@@ -29,6 +29,6 @@ fs=ss(discrete_eq.A,discrete_eq.B,eye(4),[],h);
 constgain=ones(1,4)./dcgain(feedback(fs,KK))';
 constgain(2:4)=0;
 
-simin = simin(:,1:3);
-K = [K,0.7,0];
+% simin = simin(:,1:3);
+% K = [K,0.7,0];
 
