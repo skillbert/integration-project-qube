@@ -35,7 +35,9 @@ stairs(data.time(1:end-1),diff(data.y(:,1)/data.h));
 hold on
 plot(data.time(1:end-1),data.obs(1:end-1,3));
 legend naive observer
-xlim([4.6643    5.3725]);
-ylim([-2.5953    3.0806]);
-saveas(gcf,[folder,'/xdotobs.eps']);
+% xlim([4.6643    5.3725]);
+% ylim([-2.5953    3.0806]);
+
+xlim([0.7627    1.0874]);
+% saveas(gcf,[folder,'/xdotobs.eps']);
 
