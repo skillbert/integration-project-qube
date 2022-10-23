@@ -18,7 +18,7 @@ R3 = 1;
 Q4 = [1,1,1,10] ;
 R4 = 1 ;
 
-Qfinal = [25,1,1,1];
+Qfinal = [30,1,1,1];
 Rfinal = 1; 
 
 data1 = getLQRstats(discrete_0,h,simin,Q1,R1);
@@ -140,6 +140,11 @@ xlabel('time [s]')
 ylabel('\theta angle [rad]')
 xlim([4 13])
 
+%% response time for MPC
+
+clsystem = getsys(discrete_0,h,simin,Qfinal,Rfinal);
+S = stepinfo(clsystem);
+
 %%
 
 % sim simulation_lqr_for_latex
@@ -175,4 +180,15 @@ realu = -K*x' + simin(:,2)'*constgain(1);
 
 data = [realu', y, x];
 
+end
+
+function sys = getsys(discrete_0,h,simin,Q,R)
+[K,S,e] = dlqr(discrete_0.A,discrete_0.B,diag(Q),R);
+KK=ss([],[],[],K,h);
+fs=ss(discrete_0.A,discrete_0.B,eye(4),[],h);
+cl = feedback(fs,KK) ;
+%testing = ss(discrete_0.A- discrete_0.B*K,discrete_0.B,[eye(2),zeros(2)],[],h);
+constgain=ones(1,4)./dcgain(cl)';
+clnew = ss(discrete_0.A- discrete_0.B*K, discrete_0.B*constgain(1),[eye(2),zeros(2)],[],h );
+sys = clnew;
 end

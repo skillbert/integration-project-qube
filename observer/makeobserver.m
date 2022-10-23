@@ -2,11 +2,12 @@ x0=[0;0];
 h=0.005;
 % to import from sys_id_spring
 sys_0=ss(sys_simple);
-%sys_0 = ss(sys) ;
+sys_0 = ss(sys) ;
 
 sys_pi=ss(sys_0.A.*[1,1,1,1;1,1,1,1;1,1,1,-1;-1,-1,-1,1],diag([1,1,1,-1])*sys_0.B,sys_0.C,sys_0.D);
 
-sys_for_mpc = ss(sys_pi.A,sys_pi.B,eye(4),[]);
+sys_for_mpc = ss(sys_pi.A,sys_pi.B,eye(4),[],'StateName',{'\alpha [rad]' '\theta [rad]','\dot{alpha} [rad/s]','dot{\theta} [rad/s]'},...
+    'InputName','Voltage [V]');
 sys_eq=sys_pi;
 
 discrete_eq=c2d(sys_eq,h);
@@ -29,6 +30,6 @@ fs=ss(discrete_eq.A,discrete_eq.B,eye(4),[],h);
 constgain=ones(1,4)./dcgain(feedback(fs,KK))';
 constgain(2:4)=0;
 
-simin = simin(:,1:3);
+%simin = simin(:,1:3);
 K = [K,0.5,0];
 
