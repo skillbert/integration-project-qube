@@ -2,7 +2,7 @@
 T=30;
 timesraw=0:h:T;
 
-steptime=20;
+steptime=10;
 
 amplitude=pi/2;
 u=[

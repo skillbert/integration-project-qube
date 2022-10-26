@@ -145,6 +145,103 @@ xlim([4 13])
 clsystem = getsys(discrete_0,h,simin,Qfinal,Rfinal);
 S = stepinfo(clsystem);
 
+
+%% Disturbance rejection plot
+
+datasetname = '26oct_distrejection';
+LQIdata02 = loadexp('LQI_rejection_200hz') ;
+
+
+figure
+%subplot(2,1,1) 
+hold on
+plot(timesraw,LQIdata02.y(:,1))
+plot(timesraw,LQIdata02.y(:,2))
+%legend('\alpha','\theta')
+xlabel('time [s]')
+ylabel('angle [rad]')
+xlim([4 13])
+title('LQR disturbance rejection against 2 ticks')
+legend('\alpha','\theta')
+% 
+% subplot(2,1,2)
+% hold on
+% plot(timesraw,LQIdata02.y(:,2))
+% %legend('\alpha','\theta')
+% xlabel('time [s]')
+% ylabel('\theta angle [rad]')
+% xlim([4 13])
+
+%% MPC all models refstep plot
+
+datasetname= '26oct_mpc' ;
+
+nonlin_stepdata = loadexp('nonlinear_mpc') ;
+real_stepdata = loadexp('real_mpc') ;
+lin_stepdata = loadexp('linear_mpc') ;
+
+figure
+subplot(3,1,1)
+title('Step response on different models')
+hold on
+%plot(timesraw,data5(:,1))
+plot(timesraw,lin_stepdata.u)
+plot(timesraw,nonlin_stepdata.u)
+plot(timesraw,real_stepdata.u)
+legend('linear-model','non-linear-model','real model')
+xlabel('time [s]')
+ylabel('input Voltage [V]')
+xlim([4 9])
+
+subplot(3,1,2) 
+hold on
+%plot(timesraw,data5(:,2))
+plot(timesraw,lin_stepdata.y(:,1))
+plot(timesraw,nonlin_stepdata.y(:,1))
+plot(timesraw,real_stepdata.y(:,1))
+%legend('\alpha','\theta')
+xlabel('time [s]')
+ylabel('\alpha angle [rad]')
+xlim([4 9])
+
+subplot(3,1,3)
+hold on
+%plot(timesraw,data5(:,3))
+plot(timesraw,lin_stepdata.y(:,2))
+plot(timesraw,nonlin_stepdata.y(:,2))
+plot(timesraw,real_stepdata.y(:,2))
+%legend('\alpha','\theta')
+xlabel('time [s]')
+ylabel('\theta angle [rad]')
+xlim([4 9])
+
+
+%% MPC disturbance rejection 
+
+datasetname = '26oct_mpc';
+LQIdata02 = loadexp('mpc_distreject') ;
+
+
+figure
+%subplot(2,1,1) 
+hold on
+plot(timesraw,LQIdata02.y(:,1))
+plot(timesraw,LQIdata02.y(:,2))
+%legend('\alpha','\theta')
+xlabel('time [s]')
+ylabel('angle [rad]')
+xlim([1 12])
+title('LQR disturbance rejection against 2 ticks')
+legend('\alpha','\theta')
+% 
+% subplot(2,1,2)
+% hold on
+% plot(timesraw,LQIdata02.y(:,2))
+% %legend('\alpha','\theta')
+% xlabel('time [s]')
+% ylabel('\theta angle [rad]')
+% xlim([4 13])
+
 %%
 
 % sim simulation_lqr_for_latex
