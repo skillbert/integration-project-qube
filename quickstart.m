@@ -4,4 +4,5 @@ fixpath
 SYS_ID_spring
 close all
 makeobserver
-refsquare
+refzero
+x0=[0;0;0;0];

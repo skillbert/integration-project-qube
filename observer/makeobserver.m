@@ -13,6 +13,7 @@ sys_eq=sys_pi;
 discrete_eq=c2d(sys_eq,h);
 
 [K,S,e] = dlqr(discrete_eq.A,discrete_eq.B,diag([30,1,1,1]),1);
+[Kcatch,S,e] = dlqr(discrete_eq.A,discrete_eq.B,diag([1,1,2,1]),1);
 K;
 
 poles =log(e)/h;
@@ -22,7 +23,7 @@ poles =log(e)/h;
 pCont=1*[-80,-81,-50,-51];%poles in s-domain
 pDisc=exp(pCont.*h);%poles in z-domain
 cont=place(sys_eq.A',sys_eq.C',pCont)';
-disc=place(discrete_eq.A',discrete_eq.C',pDisc)'
+disc=place(discrete_eq.A',discrete_eq.C',pDisc)';
 
 
 KK=ss([],[],[],K,h);

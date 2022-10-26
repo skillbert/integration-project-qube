@@ -137,11 +137,6 @@ sys_pi=ss(double(subs(lin_pi.A,paramsym,paramest)),double(subs(lin_pi.B,paramsym
 
 
 
-% E=1/2*J_p*theta_dot^2-cos(theta)*m_p*g*(1/2*L_p);
-% E=-cos(theta)*m_p*g*(1/2*L_p);
-E=V_p+T_p;
-
-
 syms step real
 alpha_ddot_next=nonlin(1);
 theta_ddot_next=nonlin(2);
@@ -154,10 +149,10 @@ nonlin_discrete=[
 
 % pretty(subs(subs(subs(E,paramsym,paramest),{alpha,theta,alpha_dot,theta_dot},{alpha+alpha_dot+alpha_ddot,theta+theta_dot+theta_ddot,alpha_dot+alpha_ddot,theta_dot+theta_ddot}),{alpha_ddot}));
 %change of energy for input u
-dEdtu=simplify(jacobian(E,[alpha_dot,theta_dot])*diff(nonlin,u));
-
-
-energy=subs(dEdtu,paramsym,paramest);
+% dEdtu=simplify(jacobian(E,[alpha_dot,theta_dot])*diff(nonlin,u));
+% 
+% 
+% energy=subs(dEdtu,paramsym,paramest);
 
 % denergy=subs(E,{alpha,theta,alpha_dot,theta_dot},{alpha_next,theta_next,alpha_dot_next,theta_dot_next})-E;
 % denergy_posu=subs(subs(denergy,paramsym,paramest),{alpha,g,step,alpha_dot,u},{0,9.81,0.02,0,1});
@@ -174,20 +169,38 @@ massoffset=alpha*J_r+(alpha+sin(theta)*L_p/2)*L_r*m_p;
 
 nonlin_step_euler=simplify(subs(nonlin_discrete,paramsym,paramest));
 
+
+alpha_dot_avg=(alpha_dot*J_r+(alpha_dot+theta_dot*cos(theta)*L_p/2)*m_p*L_r^2)/(m_p*L_r^2+J_r);
+alpha_dot_rel=alpha_dot-alpha_dot_avg;
+E=1/2*alpha_dot_rel^2*J_r ...
+    +1/2*(alpha_dot_rel*L_r+cos(theta)*theta_dot*1/2*L_p)^2*m_p ...
+    +1/2*(sin(theta)*theta_dot*1/2*L_p)^2*m_p ...
+    +1/2*theta_dot^2*J_p ...
+    +m_p*1/2*L_p*g*(1-cos(theta));
+
+% E=1/2*J_p*theta_dot^2-cos(theta)*m_p*g*(1/2*L_p);
+% E=-cos(theta)*m_p*g*(1/2*L_p);
+% E=V_p+T_p;
+% E = m_p*g*(0.5*L_p)*(1-cos(theta)) ...
+%     +0.5*alpha_dot^2*m_p*cos(theta) ...
+%     +0.5*theta_dot^2*J_p;
+% E = m_p*g*(0.5*L_p)*(1-cos(theta)) ...
+%     +0.5*alpha_dot^2*m_p*cos(theta) ...
+%     +0.5*theta_dot^2*J_p;
+% E = T_r+V_r+T_p+V_p ...
+%     - 0.5*alpha_dot_avg^2*J_r;
+% E = T_p+V_p;
+
+
 x=[alpha;theta;alpha_dot;theta_dot];
 % ['delta_e=',char(matlabFunction(energyfn,'Vars',{alpha,theta,alpha_dot,theta_dot,step,u})),';']
-[
+disp([
 'stepx=',char(matlabFunction(nonlin_step_euler,'Vars',{x,u,step})),';',newline(),...
 'energy=',char(matlabFunction(subs(E,paramsym,paramest),'Vars',{x})),';',newline(),...
 'massoffset=',char(matlabFunction(subs(massoffset,paramsym,paramest),'Vars',{x})),';',newline(),...
-]
+]);
 
 matlabFunction(nonlin_step_euler,'Vars',{x;u;step}','File','models/generated_nonlineuler','Outputs',{'xnext'});
-
-
-
-
-
 
 
 

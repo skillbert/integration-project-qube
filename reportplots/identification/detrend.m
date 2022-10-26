@@ -15,4 +15,4 @@ plot(stuff.time,stuff.alpha,'-',stuff.time,ones(size(stuff.alpha))*mean(stuff.al
 legend '\alpha raw data' mean
 
 folder = fileparts(which(mfilename));
-saveas(gcf,[folder,'/demean.eps']);
+saveas(gcf,[folder,'/demean.eps'],'epsc');
