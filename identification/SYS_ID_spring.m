@@ -1,4 +1,6 @@
-clc; close all; clear 
+clc;
+%close all;
+clear;
 
 %% Loading and preparing data 
 % run fixpath in root folder first
@@ -20,8 +22,9 @@ starttime = stuff.h; %seconds   set stuff.h for starting at 0
 startingnumber = floor(starttime / stuff.h) ;
 
 
-y = [detrend(stuff.alpha(2:end)),stuff.theta(2:end) ] ; %output
-%y = [stuff.alpha(2:end),stuff.theta(2:end) ] ; %output
+% y = [detrend(stuff.alpha(2:end)),stuff.theta(2:end) ] ; %output
+y = [stuff.alpha(2:end)-mean(stuff.alpha(2:end)),stuff.theta(2:end) ] ; %output
+% y = [stuff.alpha(2:end),stuff.theta(2:end) ] ; %output
 u = stuff.u(startingnumber:end-1); %input
 Ts = stuff.h ; %sampling time
 
@@ -36,6 +39,7 @@ data.OutputUnit = {'rad', 'rad'};
 data.Tstart = 0;
 data.TimeUnit = 's';
 
+figure(1)
 plot(data)
 
 
@@ -50,7 +54,7 @@ data.OutputUnit = {'rad', 'rad'};
 data.Tstart = 0;
 data.TimeUnit = 's';
 
-figure
+figure(2)
 plot(validation_data)
 
 
@@ -221,26 +225,26 @@ init_sys_simple = idgrey(odefun,parameters_black,fcn_type);
 % complex model
 sys = greyest(data,init_sys);
 opt = compareOptions('InitialCondition','zero');
-figure
+figure(4)
 compare(data,sys,Inf,opt)
 
-figure
+figure(5)
 compare(validation_data,sys,Inf,opt)
 
 % intermediate model
 sys_intermediate = greyest(data,init_sys_intermediate);
-figure
+figure(6)
 compare(data,sys_intermediate,Inf,opt)
 
-figure
+figure(7)
 compare(validation_data,sys_intermediate,Inf,opt)
 
 % simple model
 sys_simple = greyest(data,init_sys_simple);
-figure
+figure(8)
 compare(data,sys_simple,Inf,opt)
 
-figure
+figure(9)
 compare(validation_data,sys_simple,Inf,opt)
 
 %% scoring system
