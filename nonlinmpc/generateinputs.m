@@ -1,14 +1,5 @@
 
 
-%% 
-% syms u0 u1 u2 x a b c
-% 
-% w=solve([
-%     u0==a
-%     u1==a+1/2*b+1/4*c
-%     u2==a+b+c
-% ],[a,b,c])
-
 swingupinputs=[];
 
 figure(1);
@@ -17,12 +8,18 @@ clf;
 sqrspace=@(bound,n)linspace(-sqrt(bound),sqrt(bound),n).*abs(linspace(-sqrt(bound),sqrt(bound),n));
 linspacebound=@(bound,n)linspace(-bound,bound,n);
 
-u0set=linspacebound(0.8,7);
+u0set=sqrspace(0.8,7);
 umset=linspacebound(0.6,5);
 u1set=linspacebound(0.5,3);
 
-ts=0.02;
-tend=ts*10;
+swQ=0.005;
+swR=1000;
+swRdot=0.02;
+swTs=0.01;
+swCatch=20;
+
+ts=swTs;
+tend=ts*8;
 samples=0:ts:tend;
 for u0=u0set
     for um=umset
@@ -47,4 +44,5 @@ plot(samples,swingupinputs);
 
 
 
+sim('hardware/simulation_lqr_nonlinmpc.slx',3);
 

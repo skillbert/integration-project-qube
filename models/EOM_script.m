@@ -19,6 +19,7 @@ syms u real;%input signal
 syms alpha_dot alpha_ddot real;
 syms theta_dot theta_ddot real;
 
+J_p=1/12*m_p*L_p^2;
 q=[alpha;theta];
 q_dot=[alpha_dot;theta_dot];
 q_ddot=[alpha_ddot;theta_ddot];
@@ -41,18 +42,17 @@ q_ddot=[alpha_ddot;theta_ddot];
 %    1/2 * C_p * (theta_dot)^2 ;
 % speed components of the masses
 
-J_p=1/12*m_p*L_p^2;
-
-%v_r = [0 ; 0.5*L_r*alpha_dot;0]
-v_r = [0;0;0];
-%v_p = [0.5*L_p*sin(theta)*alpha_dot ; L_r*alpha_dot + 0.5*L_p*cos(theta)*theta_dot ; 0.5*L_p*sin(theta)*theta_dot] %a bit more complex 
-v_p = [0;L_r*alpha_dot + 0.5*L_p*cos(theta)*theta_dot ; 0.5*L_p*sin(theta)*theta_dot];                             % simple version
-
 % kinetic energy function
-T_r = 1/2 * m_r*(v_r(1)^2 +v_r(2)^2+v_r(3)^2) + ...
-   1/2 * J_r * alpha_dot^2;
-T_p = 1/2 * m_p*(v_p(1)^2 +v_p(2)^2+v_p(3)^2) + ...
-   1/2 * J_p * theta_dot^2 ;
+T_r = 1/2 * J_r * alpha_dot^2;
+
+% v_p = [0;L_r*alpha_dot + 0.5*L_p*cos(theta)*theta_dot ; 0.5*L_p*sin(theta)*theta_dot];
+% T_p = 1/2 * m_p*(v_p(1)^2 +v_p(2)^2+v_p(3)^2) + ...
+%    1/2 * J_p * theta_dot^2 ;
+
+syms r;
+v_px=L_r*alpha_dot+r*cos(theta)*theta_dot;
+v_py=r*sin(theta)*theta_dot;
+T_p=int(1/2*(v_px^2+v_py^2)*m_p/L_p,r,0,L_r);
 
 % potential energy function
 V_r = 0.5*K_wire*alpha^2;
@@ -172,11 +172,12 @@ nonlin_step_euler=simplify(subs(nonlin_discrete,paramsym,paramest));
 
 alpha_dot_avg=(alpha_dot*J_r+(alpha_dot+theta_dot*cos(theta)*L_p/2)*m_p*L_r^2)/(m_p*L_r^2+J_r);
 alpha_dot_rel=alpha_dot-alpha_dot_avg;
-E=1/2*alpha_dot_rel^2*J_r ...
-    +1/2*(alpha_dot_rel*L_r+cos(theta)*theta_dot*1/2*L_p)^2*m_p ...
-    +1/2*(sin(theta)*theta_dot*1/2*L_p)^2*m_p ...
-    +1/2*theta_dot^2*J_p ...
-    +m_p*1/2*L_p*g*(1-cos(theta));
+% E=1/2*alpha_dot_rel^2*J_r ...
+%     +1/2*(alpha_dot_rel*L_r+cos(theta)*theta_dot*1/2*L_p)^2*m_p ...
+%     +1/2*(sin(theta)*theta_dot*1/2*L_p)^2*m_p ...
+%     +1/2*theta_dot^2*J_p ...
+%     +m_p*1/2*L_p*g*(1-cos(theta));
+E=T_p+V_p;
 
 % E=1/2*J_p*theta_dot^2-cos(theta)*m_p*g*(1/2*L_p);
 % E=-cos(theta)*m_p*g*(1/2*L_p);
