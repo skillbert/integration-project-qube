@@ -1,4 +1,3 @@
-x0=[0;0];
 h=0.005;
 % to import from sys_id_spring
 sys_0=ss(sys_simple);
