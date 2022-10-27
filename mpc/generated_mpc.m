@@ -1,5 +1,5 @@
 %% create MPC controller object with sample time
-mpc1 = mpc(sys_for_mpc_C_1, 0.005);
+mpc1 = mpc(sys_for_mpc, 0.005);
 %% specify prediction horizon
 mpc1.PredictionHorizon = 140;
 %% specify control horizon
@@ -20,11 +20,22 @@ mpc1.Weights.MV = 1;
 mpc1.Weights.MVRate = 0.5;
 mpc1.Weights.OV = [30 1 1 1];
 mpc1.Weights.ECR = 1000000;
-%% specify simulation options
-options = mpcsimopt();
-options.RefLookAhead = 'off';
-options.MDLookAhead = 'off';
-options.Constraints = 'on';
-options.OpenLoop = 'off';
-%% run simulation
-sim(mpc1, 2001, mpc1_RefSignal_2, mpc1_MDSignal_2, options);
+
+
+% dist=getoutdist(mpc1);
+% 
+% 
+% 
+% dist.A=zeros(4);
+% dist.B=zeros(4);
+% dist.C=zeros(4);
+% dist.D=zeros(4);
+% 
+% setoutdist(mpc1,'model',dist);
+
+
+
+
+
+
+
