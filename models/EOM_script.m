@@ -46,13 +46,14 @@ q_ddot=[alpha_ddot;theta_ddot];
 T_r = 1/2 * J_r * alpha_dot^2;
 
 % v_p = [0;L_r*alpha_dot + 0.5*L_p*cos(theta)*theta_dot ; 0.5*L_p*sin(theta)*theta_dot];
-% T_p = 1/2 * m_p*(v_p(1)^2 +v_p(2)^2+v_p(3)^2) + ...
+% T_p = 1/2 * m_p*(v_p'*v_p) + ...
 %    1/2 * J_p * theta_dot^2 ;
 
 syms r;
 v_px=L_r*alpha_dot+r*cos(theta)*theta_dot;
 v_py=r*sin(theta)*theta_dot;
-T_p=int(1/2*(v_px^2+v_py^2)*m_p/L_p,r,0,L_r);
+v_pz=r*sin(theta)*alpha_dot;
+T_p=int(1/2*(v_px^2+v_py^2+v_pz^2)*m_p/L_p,r,0,L_p);
 
 % potential energy function
 V_r = 0.5*K_wire*alpha^2;
@@ -172,12 +173,12 @@ nonlin_step_euler=simplify(subs(nonlin_discrete,paramsym,paramest));
 
 alpha_dot_avg=(alpha_dot*J_r+(alpha_dot+theta_dot*cos(theta)*L_p/2)*m_p*L_r^2)/(m_p*L_r^2+J_r);
 alpha_dot_rel=alpha_dot-alpha_dot_avg;
-% E=1/2*alpha_dot_rel^2*J_r ...
-%     +1/2*(alpha_dot_rel*L_r+cos(theta)*theta_dot*1/2*L_p)^2*m_p ...
-%     +1/2*(sin(theta)*theta_dot*1/2*L_p)^2*m_p ...
-%     +1/2*theta_dot^2*J_p ...
-%     +m_p*1/2*L_p*g*(1-cos(theta));
-E=T_p+V_p;
+E=1/2*alpha_dot_rel^2*J_r ...
+    +1/2*(alpha_dot_rel*L_r+cos(theta)*theta_dot*1/2*L_p)^2*m_p ...
+    +1/2*(sin(theta)*theta_dot*1/2*L_p)^2*m_p ...
+    +1/2*theta_dot^2*J_p ...
+    +m_p*1/2*L_p*g*(1-cos(theta));
+% E=T_p+V_p;%-(alpha_dot*L_r)^2*m_p;
 
 % E=1/2*J_p*theta_dot^2-cos(theta)*m_p*g*(1/2*L_p);
 % E=-cos(theta)*m_p*g*(1/2*L_p);

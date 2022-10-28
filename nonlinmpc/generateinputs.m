@@ -13,13 +13,15 @@ umset=linspacebound(0.6,5);
 u1set=linspacebound(0.5,3);
 
 swQ=0.005;
-swR=1000;
-swRdot=0.02;
+swR=2000;
+swRdot=0.7;
+swEcost=10;
+swAlphaMax=0.8;
 swTs=0.01;
 swCatch=20;
 
 ts=swTs;
-tend=ts*8;
+tend=ts*10;
 samples=0:ts:tend;
 for u0=u0set
     for um=umset
@@ -43,6 +45,7 @@ plot(samples,swingupinputs);
 
 
 
-
+x0=rand(4,1)*2-1;
+% x0=[0;0;0;0];
 sim('hardware/simulation_lqr_nonlinmpc.slx',3);
 
