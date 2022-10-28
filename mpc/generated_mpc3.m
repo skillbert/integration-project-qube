@@ -1,7 +1,5 @@
-sys_for_mpc_C_3=load('mpc/final_plant.mat','sys_for_mpc_C_3').sys_for_mpc_C_3;
-
 %% create MPC controller object with sample time
-mpc1 = mpc(sys_for_mpc_C_3, 0.005);
+mpc1 = mpc(sys_for_mpc_C, 0.005);
 %% specify prediction horizon
 mpc1.PredictionHorizon = 140;
 %% specify control horizon
@@ -17,10 +15,12 @@ mpc1.OV(1).Min = -2.35619449019234;
 mpc1.OV(1).Max = 2.35619449019234;
 mpc1.OV(2).Min = -0.174532925199433;
 mpc1.OV(2).Max = 0.174532925199433;
+%% specify overall adjustment factor applied to weights
+beta = 0.19398;
 %% specify weights
-mpc1.Weights.MV = 1;
-mpc1.Weights.MVRate = 1;
-mpc1.Weights.OV = [30 1 1 1];
+mpc1.Weights.MV = 1*beta;
+mpc1.Weights.MVRate = 1/beta;
+mpc1.Weights.OV = [30 1 0.01 0.01]*beta;
 mpc1.Weights.ECR = 1000000;
 %% specify simulation options
 options = mpcsimopt();
@@ -29,17 +29,10 @@ options.MDLookAhead = 'off';
 options.Constraints = 'on';
 options.OpenLoop = 'off';
 %% run simulation
-%sim(mpc1, 2001, mpc1_RefSignal_3, mpc1_MDSignal_3, options);
+% sim(mpc1, 2001, mpc1_RefSignal, mpc1_MDSignal, options);
 
-%% dist
+dist=getoutdist(mpc1);
 
-%  dist=getoutdist(mpc1);
+dist.B(1,1)=0.001;
 
-
-
-% dist.A=zeros(4);
-%dist.B(1,1)=0.003;
-% dist.C=zeros(4);
-% dist.D=zeros(4);
-
-% setoutdist(mpc1,'model',dist);
+setoutdist(mpc1,'model',dist);

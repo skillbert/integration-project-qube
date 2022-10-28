@@ -1,7 +1,7 @@
 T=15;
 timesraw=0:h:T;
 
-steptime=7;
+steptime=5;
 stepindexstart=steptime/h  + 1;
 amplitude=1;
 u=[

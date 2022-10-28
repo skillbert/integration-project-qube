@@ -8,17 +8,17 @@ clf;
 sqrspace=@(bound,n)linspace(-sqrt(bound),sqrt(bound),n).*abs(linspace(-sqrt(bound),sqrt(bound),n));
 linspacebound=@(bound,n)linspace(-bound,bound,n);
 
-u0set=sqrspace(0.8,7);
+u0set=linspacebound(0.7,9);
 umset=linspacebound(0.6,5);
 u1set=linspacebound(0.5,3);
 
-swQ=0.005;
+swQ=0.004;
 swR=2000;
-swRdot=0.7;
+swRdot=1;
 swEcost=10;
-swAlphaMax=0.8;
+swAlphaMax=1;
 swTs=0.01;
-swCatch=20;
+swCatch=25;
 
 ts=swTs;
 tend=ts*10;
@@ -45,7 +45,7 @@ plot(samples,swingupinputs);
 
 
 
-x0=rand(4,1)*2-1;
-% x0=[0;0;0;0];
-sim('hardware/simulation_lqr_nonlinmpc.slx',3);
+% x0=rand(4,1)*2-1;
+x0=[0;0;0;0];
+sim('hardware/simulation_lqr_nonlinmpc.slx',5);
 
