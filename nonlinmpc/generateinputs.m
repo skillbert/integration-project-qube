@@ -2,23 +2,21 @@
 
 swingupinputs=[];
 
-figure(1);
-clf;
 
 sqrspace=@(bound,n)linspace(-sqrt(bound),sqrt(bound),n).*abs(linspace(-sqrt(bound),sqrt(bound),n));
 linspacebound=@(bound,n)linspace(-bound,bound,n);
 
-u0set=linspacebound(0.7,9);
-umset=linspacebound(0.6,5);
+u0set=linspacebound(0.8,11);
+umset=linspacebound(0.7,5);
 u1set=linspacebound(0.5,3);
 
-swQ=0.004;
-swR=2000;
+swR=0.004;
 swRdot=1;
+swQ=2000;
 swEcost=10;
-swAlphaMax=1;
+swAlphaMax=1.1;
 swTs=0.01;
-swCatch=25;
+swCatch=15;
 
 ts=swTs;
 tend=ts*10;
@@ -39,7 +37,9 @@ for u0=u0set
     end
 end
 
-plot(samples,swingupinputs);
+% figure(1);
+% clf;
+% plot(samples,swingupinputs);
 
 
 
