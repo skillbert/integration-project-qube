@@ -10,6 +10,7 @@ u0set=linspacebound(0.8,11);
 umset=linspacebound(0.7,5);
 u1set=linspacebound(0.5,3);
 
+%swingup tuning parameters
 swR=0.004;
 swRdot=1;
 swQ=2000;
@@ -37,9 +38,13 @@ for u0=u0set
     end
 end
 
-% figure(1);
-% clf;
-% plot(samples,swingupinputs);
+figure(1);
+clf;
+plot(samples,swingupinputs);
+xlabel 'time (sec)'
+ylabel 'input u'
+title 'Input curves subset'
+saveas(gcf,['reportplots/nonlinmpcinputs.eps'],'epsc');
 
 
 
@@ -47,5 +52,5 @@ end
 
 % x0=rand(4,1)*2-1;
 x0=[0;0;0;0];
-sim('hardware/simulation_lqr_nonlinmpc.slx',5);
+% sim('hardware/simulation_lqr_nonlinmpc.slx',5);
 
